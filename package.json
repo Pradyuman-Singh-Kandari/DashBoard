@@ -1,5 +1,4 @@
 {
-  "main": "src/App.js",
   "name": "admin",
   "version": "0.1.0",
   "private": true,
@@ -30,15 +29,15 @@
     "react-dom": "^18.2.0",
     "react-pro-sidebar": "^0.7.1",
     "react-router-dom": "^6.15.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "5.0.1",
     "react-tooltip": "^5.21.1",
     "simple-react-map": "^1.0.5",
     "web-vitals": "^2.1.4",
     "yup": "^1.2.0"
   },
   "scripts": {
-    "start": "npm start",
-    "build": "npm install && npm build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
