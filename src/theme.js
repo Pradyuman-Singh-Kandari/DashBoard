@@ -1,6 +1,8 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
+{/* 
 
+*/}
 // color design tokens export used tailwind css for different shades
 export const tokens = (mode) => ({
   ...(mode === "dark"
@@ -18,8 +20,8 @@ export const tokens = (mode) => ({
         },
         primary: {
           100: "#d0d1d5",
-          200: "#a1a4ab",
-          300: "#727681",
+          200: "#04087a",
+          300: "#0e3661",
           400: "#1F2A40",
           500: "#141b2d",
           600: "#101624",
@@ -130,10 +132,10 @@ export const themeSettings = (mode) => {
         ? {
             // palette values for dark mode
             primary: {
-              main: colors.primary[500],
+              main: colors.primary[100],
             },
             secondary: {
-              main: colors.greenAccent[500],
+              main: colors.greenAccent[200],
             },
             neutral: {
               dark: colors.grey[700],
@@ -141,7 +143,7 @@ export const themeSettings = (mode) => {
               light: colors.grey[100],
             },
             background: {
-              default: colors.primary[500],
+              default: colors.primary[300],
             },
           }
         : {

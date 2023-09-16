@@ -39,16 +39,21 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Profile");
 
+  // seller/details/ + localStorage.getItem("userEmail")
+
+  
+
   return (
     <Box
       sx={{
         "& .pro-sidebar-inner": {
-          background: `${colors.primary[600]} !important`,
+          background: `${colors.primary[200]} !important`,
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
         },
         "& .pro-inner-item": {
+          color: "#9b9cab",
           padding: "5px 35px 5px 20px !important",
         },
         "& .pro-inner-item:hover": {
@@ -67,7 +72,7 @@ const Sidebar = () => {
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
               margin: "10px 0 20px 0",
-              color: colors.grey[100],
+              color: colors.grey[300],
             }}
           >
             {!isCollapsed && (
@@ -90,11 +95,11 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  src="../../../public/logo192.png"
-                  alt="profile-user"
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+              <img
+  src={process.env.PUBLIC_URL + "/user.png"}
+  alt="profile-user"
+  style={{ cursor: "pointer", borderRadius: "50%" }}
+/>
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -112,7 +117,7 @@ const Sidebar = () => {
             </Box>
           )}
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+          <Box paddingLeft={isCollapsed ? undefined : "20%"}>
             <Item
               title="Dashboard"
               to="/dashboard"
@@ -136,13 +141,6 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            <Item
-              title="Transactions"
-              to="/transactions"
-              icon={<PointOfSaleIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
 
             <Item
               title="Calendar"
@@ -152,13 +150,6 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
 
             <Item
               title="FAQ Page"

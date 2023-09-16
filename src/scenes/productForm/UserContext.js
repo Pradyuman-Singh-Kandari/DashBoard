@@ -1,10 +1,10 @@
 import React, { createContext, useContext } from 'react';
 
-// Create a context for user data
+
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  // Assuming userEmail is available from your data source
+
   const userEmail = 'user@example.com';
 
   return (

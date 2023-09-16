@@ -1,230 +1,199 @@
-/* eslint-disable no-unused-vars */
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Typography, useTheme, Paper, Select } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import Header from "../../components/Header";
 import ProgressCircle from "../../components/ProgressCircle";
 import LineChart from "../../components/LineChart";
+import Sidebar from "../global/Sidebar"
+import Topbar from "../global/Topbar"
+import { MenuItem } from "@mui/material"; // Use @mui/material for MenuItem
 
-const Dashboard = () => {
+const Dashboard = ({ userEmail }) => {
   const theme = useTheme();
+  const [rq, setRq] = useState(0);
+  const [tq, setTq] = useState(0);
   const colors = tokens(theme.palette.mode);
+  const [userData, setUserData] = useState({});
+  const [productData, setProductData] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(""); // State to store the selected product
+
+  useEffect(() => {
+    const apiUrl = "seller/products/" + localStorage.getItem("userEmail");
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setProductData(data))
+      .catch((error) => console.error("Error fetching data:", error));
+    console.log(productData);
+  }, []);
+
+  const handleVeggie = async () => {
+    if (!selectedProduct) {
+      console.error("Please select a product.");
+      return;
+    }
+    console.log(selectedProduct);
+    const eM = localStorage.getItem("userEmail");
+    const data = {"name": selectedProduct, "email": eM}
+    // Fetch the data from the backend using the selected product
+    const apiUrl = "/seller/products/particularProduct";
+    console.log(data);
+    try {
+      let response = await fetch(apiUrl, {
+        // mode: 'no-cors',
+        method:"POST",
+        headers:{'content-type':'application/json'},
+        body:JSON.stringify(data)
+      });
+      if (response.ok) {
+        const data = await response.json();
+        // Update the state variables rq and tq with the fetched data
+        setRq(data.remainQuantity);
+        setTq(data.totalQuantity);
+      } else {
+        console.error("Error fetching data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  var sales = (userData.totalQuantity - userData.remainQuantity) * 500;
 
   return (
-    <Box m="20px">
-      {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+    <>
+      <Sidebar />
+      <main className="content">
+        <Topbar />
 
-        {/*<Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-          </Box> */}
-      </Box>
+        <Box m="20px">
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<DownloadOutlinedIcon />}
+            >
+              Download Reports
+            </Button>
+          </Box>
 
-      {/* GRID & CHARTS */}
-      <Box
-        display="grid"
-        gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="140px"
-        gap="20px"
-      >
-        {/* ROW 1 */}
-        {/* Box 1 */}
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Product Remaining
-          </Typography>
           <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            mt="25px"
+            display="grid"
+            gridTemplateColumns="repeat(12, 1fr)"
+            gridAutoRows="140px"
+            gap="20px"
           >
-            <ProgressCircle progress="0.65" size="125" />
-            <Typography
-              variant="h5"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "15px" }}
-            >
-              500
-            </Typography>
-            <Typography>Out of</Typography>
-            <Typography
-              variant="h4"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "3px" }}
-            >
-              7000
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Box 2 */}
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Sales This Month
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            mt="25px"
-          >
-            <ProgressCircle progress="0.30" size="125" />
-            <Typography
-              variant="h2"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "35px" }}
-            >
-              ₹48,352
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Box 3 */}
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Sales This Month
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            mt="25px"
-          >
-            <ProgressCircle progress="0.50" size="125" />
-            <Typography
-              variant="h2"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "35px" }}
-            >
-              ₹48,352
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* ROW 2 */}
-        <Box
-          gridColumn="span 8"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-           <Box
-            mt="25px"
-            p="0 30px"
-            display="flex "
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box>
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >
-                Revenue Generated
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                ₹59,342.32
-              </Typography>
-            </Box>
-            <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
-          </Box>
-        </Box>
-
-        {/*Box 2 */}
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          overflow="auto"
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            borderBottom={`4px solid ${colors.primary[500]}`}
-            colors={colors.grey[100]}
-            p="15px"
-          >
-            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
-            </Typography>
-          </Box>
-          {mockTransactions.map((transaction, i) => (
-            <Box
-              key={`${transaction.txId}-${i}`}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p="15px"
-            >
-              <Box>
-                <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h5"
-                  fontWeight="600"
+            <Box gridColumn="span 4" gridRow="span 2">
+              <Paper elevation={3} sx={{ height: "100%" }}>
+                <Box
+                  bgcolor={colors.primary[400]}
+                  p="30px"
+                  height="100%"
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="space-between"
                 >
-                  {transaction.txId}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  {transaction.user}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p="5px 10px"
-                borderRadius="4px"
-              >
-                ₹{transaction.cost}
-              </Box>
+                  <Typography variant="h5" fontWeight="600">
+                    Product Remaining
+                  </Typography>
+                  <div>
+                    <Select
+                      value={selectedProduct} // Set the selected value
+                      onChange={(e) => setSelectedProduct(e.target.value)} // Handle selection change
+                    >
+                      {productData.map((product) => (
+                        <MenuItem key={product.id} value={product.name}>
+                          {product.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <button onClick={handleVeggie}>Submit</button>
+                  </div>
+                  <ProgressCircle progress={rq/tq} size="125" />
+                  <Box>
+                    <Typography
+                      variant="h5"
+                      color={colors.greenAccent[500]}
+                      sx={{ mt: "15px" }}
+                    >
+                      {userData.remainQuantity}
+                    </Typography>
+                    <Typography>Out of</Typography>
+                    <Typography
+                      variant="h4"
+                      color={colors.greenAccent[500]}
+                      sx={{ mt: "3px" }}
+                    >
+                      {userData.totalQuantity}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
             </Box>
-          ))}
+
+            <Box gridColumn="span 4" gridRow="span 2">
+              <Paper elevation={3} sx={{ height: "100%" }}>
+                <Box
+                  bgcolor={colors.primary[400]}
+                  p="30px"
+                  height="100%"
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="space-between"
+                >
+                  <Typography variant="h5" fontWeight="600">
+                    Sales This Month
+                  </Typography>
+                  <ProgressCircle progress="0.30" size="125" />
+                  <Box>
+                    <Typography
+                      variant="h2"
+                      color={colors.greenAccent[500]}
+                      sx={{ mt: "35px" }}
+                    >
+                      {sales}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
+            </Box>
+
+            <Box gridColumn="span 4" gridRow="span 2">
+              <Paper elevation={3} sx={{ height: "100%" }}>
+                <Box
+                  bgcolor={colors.primary[400]}
+                  p="30px"
+                  height="100%"
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                >
+                  <img
+                    src={process.env.PUBLIC_URL + "/user.png"}
+                    alt="profile-user"
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                  />
+                  <Typography variant="h5" fontWeight="600" sx={{ mt: "15px" }}>
+                    {userData.userName}
+                  </Typography>
+                  <Typography variant="body2">
+                    {userData.userDescription}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Box>
+
+            <Box gridColumn="span 12" gridRow="span 2">
+              <Paper elevation={3} sx={{ height: "100%" }}>
+                <LineChart isDashboard={true} />
+              </Paper>
+            </Box>
+          </Box>
         </Box>
-      </Box>
-    </Box>
+      </main>
+    </>
   );
 };
 

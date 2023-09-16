@@ -1,114 +1,94 @@
-/* eslint-disable no-unused-vars */
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import StatBox from "../../components/StatBox";
-import EmailIcon from "@mui/icons-material/Email";
-import { Calculate } from "@mui/icons-material";
-import { calculateNewValue } from "@testing-library/user-event/dist/utils";
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  CardActions,
+  Button,
+} from "@mui/material";
+import Sidebar from "../global/Sidebar";
+import Topbar from "../global/Topbar";
 
-const Products = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
+const cardStyle = {
+  width: "300px",
+  height: "250px",
+  margin: "20px",
+  padding: "0px",
+  borderRadius: "25px",
+  boxShadow: "0px 4px 6px #24eded",
+  transition: "transform 0.2s ease-in-out",
+};
 
-    return ( 
-        <Box
-        display="grid"
-        gridTemplateColumns="1fr"
-        gridAutoRows="auto"
-        gap="20px"
-      >
-        {/* ROW 1 */}
-        <Box gridColumn="1/1" gridRow="span 2" backgroundColor={colors.primary[400]} p="30px">
-        <StatBox
-            title="Apple"
-            subtitle1="Total Quantity"
-            quantity1="500"
-            subtitle2="Remaining Quantity"
-            quantity2="200"
-            progress="0.25"
-            remaining= "10%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
+const cardContentStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
+  backgroundColor: "#1379c2"
+};
 
-        {/* ROW 2*/}
-        <Box gridColumn="1/1" gridRow="span 2" backgroundColor={colors.primary[400]} p="30px">
-        <StatBox
-            title="Mango"
-            subtitle1="Total Quantity"
-            quantity1="500"
-            subtitle2="Remaining Quantity"
-            quantity2="200"
-            progress="0.75"
-            remaining="14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
+const buttonStyle = {
+  marginTop: "10px",
+};
 
-        {/* ROW 3*/}
-        <Box gridColumn="1/1" gridRow="span 2" backgroundColor={colors.primary[400]} p="30px">
-        <StatBox
-            title="Banana"
-            subtitle1="Total Quantity"
-            quantity1="500"
-            subtitle2="Remaining Quantity"
-            quantity2="200"
-            progress="0.75"
-            remaining="14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
+const ProductPage = ({ userEmail }) => {
+  const [productData, setProductData] = useState([]);
 
-        {/* ROW 4*/}
-        <Box gridColumn="1/1" gridRow="span 2" backgroundColor={colors.primary[400]} p="30px">
-        <StatBox
-            title="Pear"
-            subtitle1="Total Quantity"
-            quantity1="500"
-            subtitle2="Remaining Quantity"
-            quantity2="200"
-            progress="0.75"
-            remaining="14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
+  useEffect(() => {
+    const apiUrl ="seller/products/" + localStorage.getItem("userEmail");
 
-        {/* ROW 5*/}
-        <Box gridColumn="1/1" gridRow="span 2" backgroundColor={colors.primary[400]} p="30px">
-        <StatBox
-            title="Melon"
-            subtitle1="Total Quantity"
-            quantity1="500"
-            subtitle2="Remaining Quantity"
-            quantity2="200"
-            progress="0.75"
-            remaining="14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setProductData(data))
+      .catch((error) => console.error("Error fetching data:", error));
+    console.log(productData);
+  }, []);
 
-      </Box>
-    );
-}
+  return (
+    <>
+      <Sidebar />
+      <main className="content">
+        <Topbar />
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          {productData.map((product, index) => (
+            <Card key={index} style={cardStyle}>
+              <CardContent style={cardContentStyle}>
+                <Typography variant="h5" gutterBottom>
+                  {product.name}
+                </Typography>
+                <Typography variant="body1">
+                  Description: {product.description}
+                </Typography>
+                <Typography variant="body1">
+                  Total Quantity: {product.totalQuantity}
+                </Typography>
+                <Typography variant="body1">
+                  Remaining Quantity: {product.remainQuantity}
+                </Typography>
+                <CardActions>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={buttonStyle}
+                    onClick={() => alert(`You clicked on ${product.name}`)}
+                  >
+                    Edit
+                  </Button>
+                </CardActions>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </main>
+    </>
+  );
+};
 
-export default Products;
+export default ProductPage;
