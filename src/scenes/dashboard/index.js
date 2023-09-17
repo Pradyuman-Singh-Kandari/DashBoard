@@ -94,6 +94,8 @@ const Dashboard = ({ userEmail }) => {
                   display="flex"
                   flexDirection="column"
                   justifyContent="space-between"
+                  alignContent="center"
+                  alignItems="center"
                 >
                   <Typography variant="h5" fontWeight="600">
                     Product Remaining
@@ -111,14 +113,15 @@ const Dashboard = ({ userEmail }) => {
                     </Select>
                     <button onClick={handleVeggie}>Submit</button>
                   </div>
-                  <ProgressCircle progress={rq/tq} size="125" />
+                  <br />
+                  <ProgressCircle progress={rq/tq} size="100" />
                   <Box>
                     <Typography
                       variant="h5"
                       color={colors.greenAccent[500]}
                       sx={{ mt: "15px" }}
                     >
-                      {userData.remainQuantity}
+                      {rq}
                     </Typography>
                     <Typography>Out of</Typography>
                     <Typography
@@ -126,7 +129,7 @@ const Dashboard = ({ userEmail }) => {
                       color={colors.greenAccent[500]}
                       sx={{ mt: "3px" }}
                     >
-                      {userData.totalQuantity}
+                      {tq}
                     </Typography>
                   </Box>
                 </Box>

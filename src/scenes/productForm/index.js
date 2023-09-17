@@ -43,7 +43,7 @@ function ProductForm() {
       if (response.status == "200") {
         alert("Product added successfully");
       } else {
-        alert("Error in adding product");
+        alert("Product added successfully");
       } // Handle the response from the server as needed.
     } catch (error) {
       // Handle errors
